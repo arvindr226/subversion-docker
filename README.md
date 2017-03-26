@@ -15,3 +15,26 @@ Run the docker container like below commands
 <pre>
 $ docker run -d -p 80:80 -p 2222:22 -p 443:443 arvindr226/subversion
 </pre>
+
+Please create a file docker-compose.yml, add the below content.
+<pre>
+version: "2.0"
+services:
+  web:
+    container_name: subversions
+    image: arvindr226/subversion
+    ports:
+       - "80:80"
+       - "443:443"
+       - "2222:22"
+</pre>
+
+To start the docker container, use the below command.
+<pre>
+$ docker-compose up -d
+</pre>
+
+To Stop the subversion docker contianer. Use the below command.
+<pre>
+$ docker-compose stop
+</pre>
