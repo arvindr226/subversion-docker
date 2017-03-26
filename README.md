@@ -12,5 +12,6 @@ by its reliability as a safe haven for valuable data; the simplicity of its mode
 of a wide variety of users and projects, from individuals to large-scale enterprise operations.
 
 Run the docker container like below commands
+<pre>
 $ docker run -d -p 80:80 -p 2222:22 -p 443:443 arvindr226/subversion
-
+</pre>
