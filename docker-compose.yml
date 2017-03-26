@@ -1,0 +1,9 @@
+version: "2.0"
+services:
+  web:
+    container_name: subversions
+    image: arvindr226/subversion
+    ports:
+       - "80:80"
+       - "443:443"
+       - "2222:22"
