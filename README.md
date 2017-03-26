@@ -56,3 +56,12 @@ Step 2-: Create SVN repository.
 <pre>
 $ ssh root@localhost -p2222 /create_svn.sh New_Repo
 </pre>
+
+
+Step 3-: Checkout your SVN repository
+<pre>
+$ svn co http://192.168.1.89/svn/New_Repo
+</pre>
+
+
+To Check the repository on WebSVN. http://localhost/ or http://serverip/
