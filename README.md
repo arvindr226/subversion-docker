@@ -12,7 +12,7 @@ Subversion exists to be universally recognized and adopted as an open-source, ce
 by its reliability as a safe haven for valuable data; the simplicity of its model and usage; and its ability to support the needs 
 of a wide variety of users and projects, from individuals to large-scale enterprise operations.
 
-Run the docker container like below commands
+# Run the docker container like below commands
 <pre>
 $ docker run -d -p 80:80 -p 2222:22 -p 443:443 arvindr226/subversion
 </pre>
@@ -30,7 +30,7 @@ services:
        - "2222:22"
 </pre>
 
-To start the docker container, use the below command.
+# To start the docker container, use the below command.
 <pre>
 $ docker-compose up -d
 </pre>
@@ -40,7 +40,7 @@ To Stop the subversion docker contianer. Use the below command.
 $ docker-compose stop
 </pre>
 
-#How to create SVN Repository ?
+# How to create SVN Repository ?
 
 First of all generate ssh public key using below command.
 <pre>
