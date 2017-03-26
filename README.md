@@ -38,3 +38,21 @@ To Stop the subversion docker contianer. Use the below command.
 <pre>
 $ docker-compose stop
 </pre>
+
+#How to create SVN Repository ?
+
+First of all generate ssh public key using below command.
+<pre>
+$ ssh-keygen 
+</pre>
+
+Step 1-: Authenticate your localhost to docker container
+<pre>
+$ ssh-copy root@localhost -p2222
+</pre>
+Enter the password "gotechnies"
+
+Step 2-: Create SVN repository.
+<pre>
+$ ssh root@localhost -p2222 /create_svn.sh New_Repo
+</pre>
