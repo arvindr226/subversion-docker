@@ -1,6 +1,7 @@
 # subversion-docker
 
-#Apache Subversion
+For the demo Please visit to the youtube URL-: https://www.youtube.com/watch?v=nXdSoo610Vk
+# Apache Subversion
 Welcome to subversion.apache.org, the online home of the Apache Subversion™ software project. 
 Subversion is an open source version control system. Founded in 2000 by CollabNet, Inc., the Subversion project 
 and software have seen incredible success over the past decade. 
@@ -48,7 +49,7 @@ $ ssh-keygen
 
 Step 1-: Authenticate your localhost to docker container
 <pre>
-$ ssh-copy root@localhost -p2222
+$ ssh-copy-id root@localhost -p2222
 </pre>
 Enter the password "gotechnies"
 
@@ -63,5 +64,7 @@ Step 3-: Checkout your SVN repository
 $ svn co http://192.168.1.89/svn/New_Repo
 </pre>
 
-
+Default Username and password.
+Username-: admin
+Password-: gotechnies
 To Check the repository on WebSVN. http://localhost/ or http://serverip/
