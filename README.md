@@ -59,7 +59,7 @@ Enter the password "gotechnies"
 
 Step 2-: Create SVN repository.
 <pre>
-$ ssh root@localhost -p2222 /create_svn.sh New_Repo
+$ ssh root@localhost -p2222 /var/www/html/create_svn.sh New_Repo
 </pre>
 
 
