@@ -19,12 +19,21 @@ RUN apt-get update \
                    libapache2-svn \
 		   php-xml \
                    libsvn-perl \
+                   openssl \
           && rm -r /var/lib/apt/lists/*
 
 RUN a2enmod dav_svn
 RUN a2enmod dav
+RUN a2enmod ssl
+# Enable https selfsigned certificate
+RUN ln -s /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-enabled/default-ssl.conf
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/certs/localhost.key -out /etc/ssl/certs/localhost.crt -subj '/CN=localhost/O=My Company Name LTD./C=US'
+RUN cat /etc/ssl/certs/*.crt /etc/ssl/certs/*key >> /etc/ssl/certs/ssl-cert-snakeoil.pem
+RUN cp /etc/ssl/certs/localhost.key /etc/ssl/private/ssl-cert-snakeoil.key
+
 WORKDIR /var/www/html
-RUN  wget -qO- -O tmp.zip http://websvn.tigris.org/files/documents/1380/49057/websvn-2.3.3.zip && unzip tmp.zip && rm tmp.zip && mv websvn-* ../
+RUN curl -L -o tmp.zip -k https://github.com/websvnphp/websvn/archive/refs/tags/2.6.1.zip && unzip tmp.zip && rm tmp.zip && mv websvn-* ../
+
 RUN mv /var/www/websvn-*/* /var/www/html/
 RUN chown -R www-data:www-data /var/www/html
 RUN rm /var/www/html/index.html
@@ -37,7 +46,8 @@ RUN htpasswd -cbs /etc/global.htpasswd admin gotechnies
 RUN echo "\$config->parentPath(\"/var/lib/svn\");"  >> /var/www/html/include/config.php
 RUN echo "\$config->addRepository(\"FirstRepo\", \"file:///var/lib/svn/FirstRepo\");" >> /var/www/html/include/config.php
 RUN  echo "<Location /svn> \n  DAV svn \n  SVNParentPath /var/lib/svn \n </Location>" >> /etc/apache2/mods-enabled/dav_svn.conf
-	
+
+
 #ssh enabled
 RUN mkdir /var/run/sshd
 RUN echo 'root:gotechnies' | chpasswd
