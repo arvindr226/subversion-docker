@@ -41,6 +41,19 @@ If you don't override the `data-volume` definition, then docker will pick the lo
 (see with `docker volume ls` and `docker volume inspect [volume-name]`). This is generally preferred for
 production, especially on Mac/Windows hosts.
 
+## Traefik
+If you have traefik running on ports 80, and 443, using a configured `docker network` named `traefik-public` AND configured to manage ssl 
+certificates via Let's Encrypt, then you do not need to export port 80 (or 443) in your site specific override. Do override the following
+to configure your domain:
+
+```
+services:
+  web:
+    labels:
+      traefik.http.routers.svn-router-http.rule: Host(`svn.example.com`)
+      traefik.http.routers.svn-router-https.rule: Host(`svn.example.com`)
+```
+
 # How to create SVN Repository ?
 
 First of all generate ssh public key using below command.
