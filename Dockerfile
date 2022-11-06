@@ -1,4 +1,5 @@
-FROM ubuntu:16.04
+ARG DIST_VERSION=16.04
+FROM ubuntu:${DIST_VERSION}
 MAINTAINER  Arvind Rawat <arvindr226@gmail.com>
 
 RUN apt-get update \

@@ -1,0 +1,13 @@
+services:
+  web:
+    ports:
+       - "80:80"
+       - "2222:22"
+       - "443:443"
+volumes:
+  data-volume:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: "${HOME}/svn-data"
