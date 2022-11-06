@@ -1,13 +1,34 @@
 version: "2.0"
 services:
   web:
-    container_name: svn
     image: "botlink/subversion:${UBUNTU_VERSION:-18.04}"
     volumes:
       - data-volume:/var/lib/svn
     networks:
       svn-network: null
+      traefik-public: null
+    labels:
+      traefik.docker.network: traefik-public
+      traefik.enable: "true"
+      traefik.http.routers.svn-router-http.entrypoints: http
+      traefik.http.routers.svn-router-http.middlewares: https-redirect
+      traefik.http.routers.svn-router-http.rule: Host(`svn.example.com`)
+      traefik.http.routers.svn-router-http.service: svn-router
+      traefik.http.routers.svn-router-https.entrypoints: https
+      traefik.http.routers.svn-router-https.rule: Host(`svn.example.com`)
+      traefik.http.routers.svn-router-https.service: svn-router
+      traefik.http.routers.svn-router-https.tls: "true"
+      traefik.http.routers.svn-router-https.tls.certresolver: le
+      traefik.http.services.svn-router.loadbalancer.server.port: "80"
+      traefik.tcp.routers.svn-router-ssh.rule: HostSNI(`*`)
+      traefik.tcp.routers.svn-router-ssh.service: svn-router-ssh
+      traefik.tcp.routers.svn-router-ssh.entrypoints: ssh-svn
+      traefik.tcp.services.svn-router-ssh.loadbalancer.server.port: "22"
+
 networks:
   svn-network:
+    name: svn-router
+  traefik-public:
+    external: true
 volumes:
   data-volume:
