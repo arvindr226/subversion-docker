@@ -54,6 +54,8 @@ services:
       traefik.http.routers.svn-router-https.rule: Host(`svn.example.com`)
 ```
 
+**Note** the example traefik setup also handles the ssh port.
+
 # How to create SVN Repository ?
 
 First of all generate ssh public key using below command.

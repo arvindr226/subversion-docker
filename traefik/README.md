@@ -3,6 +3,7 @@ Make a traefik.env like:
 ```
 echo 'TRAEFIK_DOMAIN=traefik.example.com' > ./traefik.env
 echo 'EMAIL=admin@example.com' >> ./traefik.env
+echo 'SSH_PORT=2022' >> ./traefik.env
 echo 'HASHED_PASSWORD="'$(openssl passwd -apr1 changeit | sed 's/\$/\\\$/g')'"' >> ./traefik.env
 ```
 
@@ -10,6 +11,8 @@ echo 'HASHED_PASSWORD="'$(openssl passwd -apr1 changeit | sed 's/\$/\\\$/g')'"' 
 * Change the domain and email address to match what you will be using
 * Change the password from `changeit` to be more secure. This is the password for the `admin` user
   on traefik's web interface (available at traefik.example.com) 
+* To bind SSH to a specific IP address, include it like `SSH_PORT=192.168.2.100:22`
+  This is useful so you can dedicate a server IP for Subversion's ssh and use the standard SSH port
 
 # Start
 

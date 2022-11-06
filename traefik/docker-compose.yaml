@@ -20,6 +20,7 @@ services:
       - traefik.http.routers.traefik-public-http.middlewares=admin-auth
       # Define the port inside of the Docker service to use
       - traefik.http.services.traefik-public.loadbalancer.server.port=8080
+
     command:
       # Enable Docker in Traefik, so that it reads labels from Docker services
       - --providers.docker=true
@@ -29,12 +30,15 @@ services:
       - --entrypoints.http.address=:80
       # Enable the access log, with HTTP requests
       - --accesslog
+      # Create an entrypoint with SSH for SVN
+      - --entrypoints.ssh-svn.address=:2022
       # Enable the Traefik log, for configurations and errors
       - --log
       # Enable the Dashboard and API
       - --api
     ports:
       - 80:80
+      - ${SSH_PORT:-2022}:2022
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:

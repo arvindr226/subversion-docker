@@ -20,6 +20,10 @@ services:
       traefik.http.routers.svn-router-https.tls: "true"
       traefik.http.routers.svn-router-https.tls.certresolver: le
       traefik.http.services.svn-router.loadbalancer.server.port: "80"
+      traefik.tcp.routers.svn-router-ssh.rule: HostSNI(`*`)
+      traefik.tcp.routers.svn-router-ssh.service: svn-router-ssh
+      traefik.tcp.routers.svn-router-ssh.entrypoints: ssh-svn
+      traefik.tcp.services.svn-router-ssh.loadbalancer.server.port: "22"
 
 networks:
   svn-network:
