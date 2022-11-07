@@ -35,16 +35,18 @@ RUN apt-get update \
 #ssh enabled
 RUN mkdir /var/run/sshd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN mkdir /etc/ssh/ssh-keys
 RUN sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN rm /etc/ssh/ssh_host*key /etc/ssh/ssh_host*key.pub
 RUN  sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 
-#TODO what's this?
-ENV NOTVISIBLE "in users profile"
-RUN echo "export VISIBLE=now" >> /etc/profile
+COPY sshd.sh /bin/sshd.sh
+RUN chmod +x /bin/sshd.sh
+ENV AUTHORIZED_KEY ""
 EXPOSE 22
-ENTRYPOINT ["/usr/sbin/sshd", "-D"]
+ENTRYPOINT ["/bin/sshd.sh"]
 
 FROM base as web
 ARG DEBIAN_FRONTEND

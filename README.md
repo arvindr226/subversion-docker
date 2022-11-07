@@ -42,6 +42,11 @@ If you don't override the `data-volume` definition, then docker will pick the lo
 (see with `docker volume ls` and `docker volume inspect [volume-name]`). This is generally preferred for
 production, especially on Mac/Windows hosts.
 
+## Volumes
+
+- data-volume: this holds the SVN repositories
+- ssh-keys: this has the root users's ssh settings and the ssh host keys
+
 ## Traefik
 If you have traefik running on ports 80, and 443, using a configured `docker network` named `traefik-public` AND configured to manage ssl 
 certificates via Let's Encrypt, then you do not need to export port 80 (or 443) in your site specific override. Do override the following
@@ -64,17 +69,17 @@ First of all generate ssh public key using below command.
 $ ssh-keygen 
 ```
 
-Step 1-: Authenticate your localhost to docker container
+Step 1-: Copy your ssh key into the container
 ```
-$ ssh-copy-id root@localhost -p2222
+$ AUTHORIZED_KEY=$(cat ~/.ssh/id_rsa.pub) docker compose -p subversion up -d
 ```
-Enter the password "gotechnies"
+replace `id_rsa.pub` with your public key file. This is only needed once.
+replace `-p subversion` with your project name
 
 Step 2-: Create SVN repository.
 ```
-$ ssh root@localhost -p2222 /var/www/html/create_svn.sh New_Repo
+$ ssh root@localhost -p2022 /var/www/html/create_svn.sh New_Repo
 ```
-
 
 Step 3-: Checkout your SVN repository
 ```

@@ -7,7 +7,6 @@ services:
         DIST_VERSION: ${UBUNTU_VERSION:-22.04}
       target: web
     image: "botlink/subversion-web:${UBUNTU_VERSION:-22.04}"
-    entrypoint: ['/bin/apache2.sh']
     volumes:
       - data-volume:/var/lib/svn
     expose: 
@@ -37,9 +36,12 @@ services:
         DIST_VERSION: ${UBUNTU_VERSION:-22.04}
       target: ssh
     image: "botlink/subversion-ssh:${UBUNTU_VERSION:-22.04}"
-    entrypoint: ['/usr/sbin/sshd', '-D']
+    environment:
+      # set this to overwrite /root/authorized_keys2 with your public key
+      - AUTHORIZED_KEY=${AUTHORIZED_KEY}
     volumes:
       - data-volume:/var/lib/svn
+      - host-keys:/etc/ssh/ssh-keys
     expose: 
       - 22
     networks:
@@ -61,3 +63,4 @@ networks:
     external: true
 volumes:
   data-volume:
+  host-keys:
