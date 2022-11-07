@@ -29,8 +29,9 @@ replace or omit `-p subversion` if you want to use a different project name
 
 ## Overrides
 
-The `docker-compose.override.yml` opens ports 80 for http and 2022 for ssh. This is good for testing, but not great for production.
-Bind mounts are only performant on linux, and you probably don't want to store production data in some user's home folder.
+The `docker-compose.override.yml` opens ports 80 for http and 2022 for ssh, and puts the repos in your home folder.
+This is good for testing, but not great for production. Bind mounts are only performant on linux, and you probably
+don't want to store production data in some user's home folder.
 
 For production, create another override file (ex `mysite.yml`) and use that to start. Ex:
 ```
