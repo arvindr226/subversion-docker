@@ -43,6 +43,8 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 #TODO what's this?
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
+EXPOSE 22
+ENTRYPOINT ["/usr/sbin/sshd", "-D"]
 
 FROM base as web
 ENV TZ=UTC
@@ -82,12 +84,10 @@ RUN chmod -R 775 /var/lib/svn
 #RUN htpasswd -c /etc/global.htpasswd admin 
 RUN htpasswd -cbs /etc/global.htpasswd admin gotechnies
 RUN echo "\$config->parentPath(\"/var/lib/svn\");"  >> /var/www/html/include/config.php
-RUN echo "\$config->addRepository(\"FirstRepo\", \"file:///var/lib/svn/FirstRepo\");" >> /var/www/html/include/config.php
 RUN  echo "<Location /svn> \n  DAV svn \n  SVNParentPath /var/lib/svn \n </Location>" >> /etc/apache2/mods-enabled/dav_svn.conf
 COPY apache2.sh /bin/apache2.sh
 RUN chmod +x /bin/apache2.sh
 # Ports
 EXPOSE 80
 EXPOSE 443
-ENTRYPOINT ['/bin/apache2']
-
+ENTRYPOINT ["/bin/apache2.sh"]
