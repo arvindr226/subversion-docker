@@ -1,13 +1,14 @@
 ARG DIST_VERSION=22.04
 ARG WEBSVN_VERSION=2.8.0
 FROM ubuntu:${DIST_VERSION} as base
+ARG DEBIAN_FRONTEND=noninteractive
 MAINTAINER  Botlink <noreply-organization-Botlink@github.com>
 #Tested with Ubuntu versions 16.04, 18.04, 20.04, and 22.04
 # with WebSVN 2.8.0
 
 ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-ARG DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_FRONTEND
 RUN apt-get update \
      && apt-get install -y --no-install-recommends \
           subversion \
@@ -18,6 +19,7 @@ RUN apt-get update \
           nano \
           wget \
           vim \
+          tzdata \
        && rm -r /var/lib/apt/lists/*
 RUN echo 'root:gotechnies' | chpasswd
 
@@ -25,9 +27,7 @@ COPY create_svn.sh  ./create_svn.sh
 RUN chmod +x ./create_svn.sh
 
 FROM base as ssh
-ENV TZ=UTC
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-ARG DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_FRONTEND
 RUN apt-get update \
      && apt-get install -y --no-install-recommends \
           openssh-server \
@@ -47,9 +47,7 @@ EXPOSE 22
 ENTRYPOINT ["/usr/sbin/sshd", "-D"]
 
 FROM base as web
-ENV TZ=UTC
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-ARG DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_FRONTEND
 RUN apt-get update \
      && apt-get install -y --no-install-recommends \
           apache2 \
