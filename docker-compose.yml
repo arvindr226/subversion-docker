@@ -1,9 +1,18 @@
-version: "2.0"
+version: "3.7"
 services:
   web:
-    image: "botlink/subversion:${UBUNTU_VERSION:-22.04}"
+    build:
+      context: .
+      args:
+        DIST_VERSION: ${UBUNTU_VERSION:-22.04}
+      target: web
+    image: "botlink/subversion-web:${UBUNTU_VERSION:-22.04}"
+    entrypoint: ['/bin/apache2.sh']
     volumes:
       - data-volume:/var/lib/svn
+    expose: 
+      - 80
+      # - 443
     networks:
       svn-network: null
       traefik-public: null
@@ -21,6 +30,25 @@ services:
       traefik.http.routers.svn-router-https.tls: "true"
       traefik.http.routers.svn-router-https.tls.certresolver: le
       traefik.http.services.svn-router.loadbalancer.server.port: "80"
+  ssh:
+    build:
+      context: .
+      args:
+        DIST_VERSION: ${UBUNTU_VERSION:-22.04}
+      target: ssh
+    image: "botlink/subversion-ssh:${UBUNTU_VERSION:-22.04}"
+    entrypoint: ['/usr/sbin/sshd', '-D']
+    volumes:
+      - data-volume:/var/lib/svn
+    expose: 
+      - 22
+    networks:
+      svn-network: null
+      traefik-public: null
+    restart: always
+    labels:
+      traefik.docker.network: traefik-public
+      traefik.enable: "true"
       traefik.tcp.routers.svn-router-ssh.rule: HostSNI(`*`)
       traefik.tcp.routers.svn-router-ssh.service: svn-router-ssh
       traefik.tcp.routers.svn-router-ssh.entrypoints: ssh-svn
