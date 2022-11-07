@@ -21,7 +21,6 @@ RUN apt-get update \
           vim \
           tzdata \
        && rm -r /var/lib/apt/lists/*
-RUN echo 'root:gotechnies' | chpasswd
 
 COPY create_svn.sh  ./create_svn.sh
 RUN chmod +x ./create_svn.sh
@@ -34,11 +33,8 @@ RUN apt-get update \
        && rm -r /var/lib/apt/lists/*
 #ssh enabled
 RUN mkdir /var/run/sshd
-RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN mkdir /etc/ssh/ssh-keys
-RUN sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN rm /etc/ssh/ssh_host*key /etc/ssh/ssh_host*key.pub
-RUN  sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 
@@ -81,8 +77,6 @@ RUN cp /var/www/html/include/distconfig.php /var/www/html/include/config.php
 RUN mkdir -p /var/lib/svn/FirstRepo
 RUN svnadmin create --fs-type fsfs /var/lib/svn/FirstRepo
 RUN chmod -R 775 /var/lib/svn
-#RUN htpasswd -c /etc/global.htpasswd admin 
-RUN htpasswd -cbs /etc/global.htpasswd admin gotechnies
 RUN echo "\$config->parentPath(\"/var/lib/svn\");"  >> /var/www/html/include/config.php
 RUN  echo "<Location /svn> \n  DAV svn \n  SVNParentPath /var/lib/svn \n </Location>" >> /etc/apache2/mods-enabled/dav_svn.conf
 COPY apache2.sh /bin/apache2.sh

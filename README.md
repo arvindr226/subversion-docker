@@ -86,9 +86,4 @@ Step 3-: Checkout your SVN repository
 $ svn co http://192.168.1.89/svn/New_Repo
 ```
 
-Default Username and password.  
-
-**Username-: admin**  
-**Password-: gotechnies**  
-
 To Check the repository on WebSVN. http://localhost/ or http://serverip/
