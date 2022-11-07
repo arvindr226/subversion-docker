@@ -2,8 +2,10 @@ services:
   web:
     ports:
        - "80:80"
-       - "2222:22"
        - "443:443"
+  ssh:
+    ports:
+       - "2222:22"
 volumes:
   data-volume:
     driver: local
