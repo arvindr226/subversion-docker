@@ -1,27 +1,33 @@
-ARG DIST_VERSION=16.04
+ARG DIST_VERSION=22.04
+ARG WEBSVN_VERSION=2.8.0
 FROM ubuntu:${DIST_VERSION}
-MAINTAINER  Arvind Rawat <arvindr226@gmail.com>
+MAINTAINER  Botlink <noreply-organization-Botlink@github.com>
+#Tested with Ubuntu versions 16.04, 18.04, 20.04, and 22.04
+# with WebSVN 2.8.0
 
+ENV TZ=UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
-	&& apt-get install -y --no-install-recommends \
-   		   apache2 \
-                   subversion \
-                   git \
-                   curl \
-                   zip \
-		   unzip \
-                   nano \
-		   php \
-   		   libapache2-mod-php \
-                   supervisor \
-     		   wget \
-                   openssh-server \
-                   vim \
-                   libapache2-svn \
-		   php-xml \
-                   libsvn-perl \
-                   openssl \
-          && rm -r /var/lib/apt/lists/*
+     && apt-get install -y --no-install-recommends \
+          apache2 \
+          subversion \
+          git \
+          curl \
+          zip \
+          unzip \
+          nano \
+          php \
+          libapache2-mod-svn \
+          libapache2-mod-php \
+          supervisor \
+          wget \
+          openssh-server \
+          vim \
+          php-xml \
+          libsvn-perl \
+          openssl \
+       && rm -r /var/lib/apt/lists/*
 
 RUN a2enmod dav_svn
 RUN a2enmod dav
@@ -32,8 +38,9 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/certs/l
 RUN cat /etc/ssl/certs/*.crt /etc/ssl/certs/*key >> /etc/ssl/certs/ssl-cert-snakeoil.pem
 RUN cp /etc/ssl/certs/localhost.key /etc/ssl/private/ssl-cert-snakeoil.key
 
+ARG WEBSVN_VERSION
 WORKDIR /var/www/html
-RUN curl -L -o tmp.zip -k https://github.com/websvnphp/websvn/archive/refs/tags/2.6.1.zip && unzip tmp.zip && rm tmp.zip && mv websvn-* ../
+RUN curl -L -o tmp.zip -k https://github.com/websvnphp/websvn/archive/refs/tags/${WEBSVN_VERSION}.zip && unzip tmp.zip && rm tmp.zip && mv websvn-* ../
 
 RUN mv /var/www/websvn-*/* /var/www/html/
 RUN chown -R www-data:www-data /var/www/html
@@ -53,6 +60,7 @@ RUN  echo "<Location /svn> \n  DAV svn \n  SVNParentPath /var/lib/svn \n </Locat
 RUN mkdir /var/run/sshd
 RUN echo 'root:gotechnies' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN  sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd

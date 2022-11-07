@@ -1,12 +1,13 @@
 version: "2.0"
 services:
   web:
-    image: "botlink/subversion:${UBUNTU_VERSION:-18.04}"
+    image: "botlink/subversion:${UBUNTU_VERSION:-22.04}"
     volumes:
       - data-volume:/var/lib/svn
     networks:
       svn-network: null
       traefik-public: null
+    restart: always
     labels:
       traefik.docker.network: traefik-public
       traefik.enable: "true"
